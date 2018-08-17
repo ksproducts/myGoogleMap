@@ -14,6 +14,9 @@
     // GoogleMapインスタンス用変数
     var map;
 
+    // ズームレベル変更のイベントリスナー
+    var zoomChanged_listener;
+
     // 表示倍率変数
     var z = 11;
 
