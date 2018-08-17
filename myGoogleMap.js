@@ -178,20 +178,19 @@
                     // 表示領域を生成します。
                     var bounds = map.getBounds();
 
-                    for(i = 0; i < Markers.length; i++) {
+                    //マーカーが境界内に含まれるかどうかで表示・非表示を切り替え
+                    for(mark in Markers) {
 
-                        if(bounds.contains(Markers[i].position)) { //境界内に含まれる
-                            Markers[i].setMap(map);
+                        if(bounds.contains(Markers[mark].position)) {
+                            Markers[mark].setMap(map);
                         } else {
-                            Markers[i].setMap(null);
+                            Markers[mark].setMap(null);
                         }
 
                     }
 
                 });
 
-                //2018.02.21 モード切替時にデフォルトUIの＋－が効かなくなるのでリスナー指定に変更
-                //google.maps.event.clearListeners(map, "zoom_changed");
                 google.maps.event.removeListener(zoomChanged_listener);
                 zoomChanged_listener = google.maps.event.addListener(map, "zoom_changed", function()
                 {
@@ -755,6 +754,31 @@
 
                 }
             });
+
+            google.maps.event.addListener(map, "bounds_changed", function()
+            {
+
+                // 表示領域を生成します。
+                var bounds = map.getBounds();
+
+                //ポリゴンが境界内に含まれるかどうかで表示・非表示を切り替え
+                var pBounds = new google.maps.LatLngBounds();
+                var myPoly = poly.getPaths();
+
+                myPoly.forEach( function( value, index, array) {
+                    value.forEach( function( val ) {
+                        pBounds.extend(val);
+                    });
+                });
+
+                if(bounds.intersects(pBounds)) {
+                    poly.setMap(map);
+                } else {
+                    poly.setMap(null);
+                }
+
+            });
+
         },
 
         clear: function()
