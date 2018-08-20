@@ -168,8 +168,8 @@
                     // code
                 });
 
-                google.maps.event.clearListeners(map, "bounds_changed");
-                google.maps.event.addListener(map, "bounds_changed", function()
+                google.maps.event.clearListeners(map, "idle");
+                google.maps.event.addListener(map, "idle", function()
                 {
 
                     // 表示領域を生成します。
@@ -179,7 +179,9 @@
                     for(mark in Markers) {
 
                         if(bounds.contains(Markers[mark].position)) {
-                            Markers[mark].setMap(map);
+                            if(Markers[mark].getMap() == null) {
+                                Markers[mark].setMap(map);
+                            }
                         } else {
                             Markers[mark].setMap(null);
                         }
