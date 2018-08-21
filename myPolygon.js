@@ -36,9 +36,9 @@
 
     var myPolygon = {
 
-        area_id: "",
-        area_tubo_id: "",
-        distance_id: "",
+        area_id: "",      // 面積（平米）を表示する部分のタグID
+        area_tubo_id: "", // 面積（坪数）を表示する部分のタグID
+        distance_id: "",  // 距離を表示する部分のタグID
 
         make: function(area_id, area_tubo_id, distance_id)
         {
