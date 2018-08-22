@@ -31,7 +31,7 @@
         // イベントリスナー
         resize_listener: null,        // リサイズ
         click_listener: null,         // クリック
-        dblClick_listener: null,      // クリック
+        dblClick_listener: null,      // ダブルクリック
         centerChanged_listener: null, // 中心点変更
         idle_listener: null,          // アイドル状態
         zoomChanged_listener: null,   // ズームレベル変更
@@ -559,7 +559,7 @@
 
         // ルート表示
         //{
-            DispRoute: function(startSpot)
+            dispRoute: function(startSpot)
             {
                 var directionsService = new google.maps.DirectionsService();
 
