@@ -12,7 +12,7 @@
 //{
     var myStreetView = {
 
-        id: "",
+        id: null,
         radius: 50, //ストリートビューを検索する半径
         panorama: null,
 
@@ -21,7 +21,7 @@
             pov: {
                 heading: 0,
                 pitch: 0,
-                zoom: 1
+                zoom: 1,
             }
         },
 

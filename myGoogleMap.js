@@ -8,98 +8,87 @@
 
 
 //===========================================
-// GoogleMap用グローバル変数の宣言
+// GoogleMapクラス
 //===========================================
 //{
-    // GoogleMapインスタンス用変数
-    var map;
-
-    // ズームレベル変更のイベントリスナー
-    var zoomChanged_listener;
-
-    // 表示倍率変数
-    var z = 11;
-
-    // GoogleMap高さ変更用
-    var center;
-
-    // アイコンフラグ
-    var icon, icon_shadow;
-
-    // マーカー配列用
-    var Markers;
-
-    // タイマーID
-    var timerID;
-//}
-
-
-//===========================================
-// 初期座標設定（クラス）
-//===========================================
-//{
-    var default_location = { //世界測地系
-        lat : 35.658582050535614,
-        lng : 139.74543124437332,
-    };
-//}
-
-
-//===========================================
-// SankiGoogleMapクラス
-//===========================================
-//{
-    // GoogleMap Property
-    //{
-        var myOptions = {
-            center: new google.maps.LatLng(default_location.lat, default_location.lng),
-            disableDoubleClickZoom: true,
-            draggable: true,
-            mapTypeControl: true,
-            //mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DEFAULT}, // DEFAULT,HORIZONTAL_BAR,DROPDOWN_MENU
-            mapTypeId: google.maps.MapTypeId.ROADMAP, // ROADMAP,SATELLITE,HYBRID,TERRAIN
-            streetViewControl: false,
-            navigationControl: true,
-            //navigationControlOptions: {style: google.maps.NavigationControlStyle.DEFAULT}, // DEFAULT,SMALL,ANDROID,ZOOM_PAN
-            scaleControl: true,
-            //scaleControlOptions: {style: google.maps.ScaleControlStyle.STANDARD},
-            scrollwheel: false,
-            zoomControl: true,
-            zoom: z,
-            maxzoom: 21,          //カスタム追加（拡大の最大値：0～21（実際には20まで））
-            metric: false,        //カスタム追加（世界測地系に変換するか）
-            addMarkers: false,    //カスタム追加（クリックしてマーカーを追加するかどうか）
-            adjustMarkers: false, //カスタム追加（近接するマーカーを位置調整するかどうか）
-            adjustBounds: false,  //カスタム追加（全てのマーカーが表示されるように自動調節するかどうか）
-        };
-    //}
-
-    // Marker Property
-    //{
-        var markerOptions = {
-            title: null,
-            icon: null,
-            shadow: null,
-            draggable: false,
-            crossOnDrag: true,          //ドラッグ中の十字マーク表示
-            //animation: google.maps.Animation.DROP, //(BOUNCE|DROP) //ドロップ時の挙動
-            enableDelete: false,        //カスタム追加（マーカークリックで削除するか）
-            enableInfoWindow: false,    //カスタム追加（情報ウィンドウを表示するか）
-        };
-    //}
-
-    // Route Request Property
-    //{
-        var requestOptions = {
-            origin: null,       //出発地点
-            destination: null,  //到着地点
-            travelMode: google.maps.DirectionsTravelMode.DRIVING, //DRIVING=自動車,BICYCLING=自転車,TRANSIT=電車,WALKING=徒歩
-        };
-    //}
-
     var myGoogleMap = {
 
-        id: "",
+        id: null,
+
+        // GoogleMapインスタンス用
+        map: null,
+
+        // アイコンフラグ
+        icon: null,
+        icon_shadow: null,
+
+        // マーカー配列用
+        Markers: null,
+
+        // タイマーID
+        timerID: null,
+
+        // イベントリスナー
+        resize_listener: null,        // リサイズ
+        click_listener: null,         // クリック
+        dblClick_listener: null,      // クリック
+        centerChanged_listener: null, // 中心点変更
+        idle_listener: null,          // アイドル状態
+        zoomChanged_listener: null,   // ズームレベル変更
+
+        // 初期座標設定
+        default_location: { //世界測地系
+            lat : 35.658582050535614,
+            lng : 139.74543124437332,
+        },
+
+        // GoogleMap Property
+        //{
+            myOptions: {
+                center: null,
+                disableDoubleClickZoom: true,
+                draggable: true,
+                mapTypeControl: true,
+                //mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DEFAULT}, // DEFAULT,HORIZONTAL_BAR,DROPDOWN_MENU
+                mapTypeId: google.maps.MapTypeId.ROADMAP, // ROADMAP,SATELLITE,HYBRID,TERRAIN
+                streetViewControl: false,
+                navigationControl: true,
+                //navigationControlOptions: {style: google.maps.NavigationControlStyle.DEFAULT}, // DEFAULT,SMALL,ANDROID,ZOOM_PAN
+                scaleControl: true,
+                //scaleControlOptions: {style: google.maps.ScaleControlStyle.STANDARD},
+                scrollwheel: false,
+                zoomControl: true,
+                zoom: 11,
+                maxzoom: 21,          //カスタム追加（拡大の最大値：0～21（実際には20まで））
+                metric: false,        //カスタム追加（世界測地系に変換するか）
+                addMarkers: false,    //カスタム追加（クリックしてマーカーを追加するかどうか）
+                adjustMarkers: false, //カスタム追加（近接するマーカーを位置調整するかどうか）
+                adjustBounds: false   //カスタム追加（全てのマーカーが表示されるように自動調節するかどうか）
+            },
+        //}
+
+        // Marker Property
+        //{
+            markerOptions: {
+                title: null,
+                icon: null,
+                shadow: null,
+                draggable: false,
+                crossOnDrag: true,          //ドラッグ中の十字マーク表示
+                //animation: google.maps.Animation.DROP, //(BOUNCE|DROP)
+                enableDelete: false,        //カスタム追加（マーカークリックで削除するか）
+                enableInfoWindow: false     //カスタム追加（情報ウィンドウを表示するか）
+            },
+        //}
+
+        // Route Request Property
+        //{
+            requestOptions: {
+                origin: null,      // 出発地点
+                destination: null, // 到着地点
+                travelMode: google.maps.DirectionsTravelMode.DRIVING // DRIVING=自動車,BICYCLING=自転車,TRANSIT=電車,WALKING=徒歩
+            },
+        //}
 
         // GoogleMap 表示関数
         //{
@@ -110,17 +99,19 @@
                     return null;
                 }
 
-                myOptions.draggableCursor = null;
-                myOptions.draggingCursor  = null;
+                this.myOptions.center = new google.maps.LatLng(this.default_location.lat, this.default_location.lng);
+
+                this.myOptions.draggableCursor = null;
+                this.myOptions.draggingCursor  = null;
 
                 //GoogleMapインスタンスを生成(v3)
-                map = new google.maps.Map(document.getElementById(this.id), myOptions);
+                this.map = new google.maps.Map(document.getElementById(this.id), this.myOptions);
 
                 // マーカー配列の初期化
-                Markers = new Array();
+                this.Markers = new Array();
 
-                //icon          = this.makeIcon();
-                //icon_shadow   = this.makeIconShadow();
+                //this.icon        = this.makeIcon();
+                //this.icon_shadow = this.makeIconShadow();
 
                 this.addEvent();
             },
@@ -130,25 +121,31 @@
         //{
             addEvent: function()
             {
+                // 読み込み完了時に一度だけ実行
+                google.maps.event.addListenerOnce(map, "idle", function()
+                {
+                    // code
+                });
+
                 // divリサイズ時mapイベント
                 // リサイズ時にも中心点をキープする
-                google.maps.event.clearListeners(map, "resize");
-                google.maps.event.addListener(map, "resize", function(LatLng)
+                google.maps.event.removeListener(this.resize_listener);
+                this.resize_listener = google.maps.event.addListener(this.map, "resize", function(LatLng)
                 {
-                    if(LatLng != null) map.setCenter(LatLng, myOptions.zoom);
+                    if(LatLng != null) myGoogleMap.map.setCenter(LatLng, myGoogleMap.myOptions.zoom);
                 });
 
                 // divリサイズ時mapイベントのトリガー
                 document.getElementById("map").onresize = function()
                 {
-                    var LatLng = map.getCenter();
-                    google.maps.event.trigger(map, "resize", LatLng);
+                    var LatLng = myGoogleMap.map.getCenter();
+                    google.maps.event.trigger(myGoogleMap.map, "resize", LatLng);
                 }
 
-                google.maps.event.clearListeners(map, "click");
-                google.maps.event.addListener(map, "click", function(e)
+                google.maps.event.removeListener(this.click_listener);
+                this.click_listener = google.maps.event.addListener(this.map, "click", function(e)
                 {
-                    if(myOptions.addMarkers) {
+                    if(myGoogleMap.myOptions.addMarkers) {
 
                         if(e) {
                             myGoogleMap.createMarker(e.latLng.lat(), e.latLng.lng(), false);
@@ -156,47 +153,47 @@
                     }
                 });
 
-                google.maps.event.clearListeners(map, "dblclick");
-                google.maps.event.addListener(map, "dblclick", function(e)
+                google.maps.event.removeListener(this.dblClick_listener);
+                this.dblClick_listener = google.maps.event.addListener(this.map, "dblclick", function(e)
                 {
                     // code
                 });
 
-                google.maps.event.clearListeners(map, "center_changed");
-                google.maps.event.addListener(map, "center_changed", function()
+                google.maps.event.removeListener(this.centerChanged_listener);
+                this.centerChanged_listener = google.maps.event.addListener(this.map, "center_changed", function()
                 {
                     // code
                 });
 
-                google.maps.event.clearListeners(map, "idle");
-                google.maps.event.addListener(map, "idle", function()
+                google.maps.event.removeListener(this.idle_listener);
+                this.idle_listener = google.maps.event.addListener(this.map, "idle", function()
                 {
 
                     // 表示領域を生成します。
-                    var bounds = map.getBounds();
+                    var bounds = myGoogleMap.map.getBounds();
 
                     //マーカーが境界内に含まれるかどうかで表示・非表示を切り替え
-                    for(mark in Markers) {
+                    for(mark in myGoogleMap.Markers) {
 
-                        if(bounds.contains(Markers[mark].position)) {
-                            if(Markers[mark].getMap() == null) {
-                                Markers[mark].setMap(map);
+                        if(bounds.contains(myGoogleMap.Markers[mark].position)) {
+                            if(myGoogleMap.Markers[mark].getMap() == null) {
+                                myGoogleMap.Markers[mark].setMap(myGoogleMap.map);
                             }
                         } else {
-                            Markers[mark].setMap(null);
+                            myGoogleMap.Markers[mark].setMap(null);
                         }
 
                     }
 
                 });
 
-                google.maps.event.removeListener(zoomChanged_listener);
-                zoomChanged_listener = google.maps.event.addListener(map, "zoom_changed", function()
+                google.maps.event.removeListener(this.zoomChanged_listener);
+                this.zoomChanged_listener = google.maps.event.addListener(this.map, "zoom_changed", function()
                 {
-                    var z = map.getZoom();
+                    var z = myGoogleMap.map.getZoom();
 
-                    if(z > myOptions.maxzoom) {
-                        map.setZoom(myOptions.maxzoom);
+                    if(z > myGoogleMap.myOptions.maxzoom) {
+                        myGoogleMap.map.setZoom(myGoogleMap.myOptions.maxzoom);
                         alert("これ以上拡大できません。");
                     }
                 });
@@ -208,12 +205,12 @@
         //{
             myZoomIn: function()
             {
-                map.setZoom(map.getZoom() + 1);
+                this.map.setZoom(this.map.getZoom() + 1);
             },
 
             myZoomOut: function()
             {
-                map.setZoom(map.getZoom() - 1);
+                this.map.setZoom(this.map.getZoom() - 1);
             },
         //}
 
@@ -271,10 +268,10 @@
                         function(geo_result, geo_response)
                         {
                             if(geo_response == "OK") {
-                                var myMetric = myOptions.metric;
-                                myOptions.metric = false;
+                                var myMetric = myGoogleMap.myOptions.metric;
+                                myGoogleMap.myOptions.metric = false;
                                 myGoogleMap.createMarker(geo_result[0].geometry.location.lat(), geo_result[0].geometry.location.lng(), true);
-                                myOptions.metric = myMetric;
+                                myGoogleMap.myOptions.metric = myMetric;
                             } else {
                                 //alert(geo_response);
                                 alert("「" + addr + "」が見つかりませんでした。");
@@ -323,7 +320,7 @@
             createMarker: function(lat, lng, toCenter)
             {
                 // 世界測地系に変換
-                if(myOptions.metric) {
+                if(this.myOptions.metric) {
                     var obj = this.cnvCoords(lat, lng, true);
                     lat = obj.lat;
                     lng = obj.lng;
@@ -331,35 +328,35 @@
 
                 targetPoint = new google.maps.LatLng(lat, lng);
 
-                markerOptions.map = map;
-                markerOptions.position = targetPoint;
-                markerOptions.icon = icon;
-                markerOptions.shadow = icon_shadow;
+                this.markerOptions.map = this.map;
+                this.markerOptions.position = targetPoint;
+                this.markerOptions.icon = this.icon;
+                this.markerOptions.shadow = this.icon_shadow;
 
-                var marker = new google.maps.Marker(markerOptions);
+                var marker = new google.maps.Marker(this.markerOptions);
 
                 // グローバル配列にマーカーを追加
-                var i = Markers.push(marker);
+                var i = this.Markers.push(marker);
                 i--;
 
-                if(markerOptions.enableDelete) {
+                if(this.markerOptions.enableDelete) {
 
                     google.maps.event.addListener(marker, "click", function(e)
                     {
                         marker.setMap(null); //マーカーの削除
-                        Markers.splice(i, 1);
+                        myGoogleMap.Markers.splice(i, 1);
 
                         // 情報ウィンドウの表示
                         //var iwOptions = {
                         //    content: "test"
                         //};
                         //var infoWindow = new google.maps.InfoWindow(iwOptions);
-                        //infoWindow.open(map, marker);
+                        //infoWindow.open(myGoogleMap.map, marker);
                     });
 
                 }
 
-                if(toCenter) map.setCenter(targetPoint, myOptions.zoom);
+                if(toCenter) this.map.setCenter(targetPoint, this.myOptions.zoom);
             },
         //}
 
@@ -410,10 +407,10 @@
                 // Markers: Array   マーカーポイントを格納した配列
                 // mark:    integer マーカーポイントのインデックス
 
-                for(mark in Markers) {
+                for(mark in this.Markers) {
 
-                    var m      = Markers[mark].position; // [mark]番目の座標を取得
-                    var radius = this.calcScope();       // 座標範囲の算出
+                    var m      = this.Markers[mark].position; // [mark]番目の座標を取得
+                    var radius = this.calcScope();            // 座標範囲の算出
 
                     // [mark]番目のポイントを中心とした矩形領域を作成
                     // （緯度経度は北東にいくほど値が大きくなる）
@@ -428,16 +425,16 @@
 
                     // 他のポイントが境界内に含まれるか
                     //{
-                        for(ma in Markers) {
+                        for(ma in this.Markers) {
 
                             if(mark != ma) {
 
-                                if(llB.contains(Markers[ma].position)) { // 境界内に含まれる
+                                if(llB.contains(this.Markers[ma].position)) { // 境界内に含まれる
 
-                                    var n = Markers[ma].position;
+                                    var n = this.Markers[ma].position;
                                     var toLatLng = new google.maps.LatLng(m.lat() + (m.lat() - n.lat()), m.lng() + (m.lng() - n.lng()));
 
-                                    Markers[mark].setPosition(toLatLng);
+                                    this.Markers[mark].setPosition(toLatLng);
 
                                     f = true; // ループさせるため、フラグを立てる
 
@@ -453,15 +450,15 @@
                 //{
                     if(f) {
 
-                        timerID = setTimeout("myGoogleMap.adjustInterval()", 100);
+                        this.timerID = setTimeout("myGoogleMap.adjustInterval()", 100);
 
                     } else {
 
-                        clearTimeout(timerID); // 終了させる
+                        clearTimeout(this.timerID); // 終了させる
 
-                        if(Markers.length > 1) {
+                        if(this.Markers.length > 1) {
                             var coords = this.getAverage();
-                            map.setCenter(new google.maps.LatLng(coords.lat, coords.lng), map.getZoom());
+                            this.map.setCenter(new google.maps.LatLng(coords.lat, coords.lng), this.map.getZoom());
                         }
 
                     }
@@ -480,15 +477,15 @@
                 // Markers: Array   マーカーポイントを格納した配列
                 // mark:    integer マーカーポイントのインデックス
 
-                for(mark in Markers) {
-                    var m = Markers[mark].position; // [mark]番目の座標を取得
+                for(mark in this.Markers) {
+                    var m = this.Markers[mark].position; // [mark]番目の座標を取得
 
                     lngLat += m.lat();
                     lngLng += m.lng();
                 }
 
-                lngLat /= Markers.length;
-                lngLng /= Markers.length;
+                lngLat /= this.Markers.length;
+                lngLng /= this.Markers.length;
 
                 var obj = new Object();
                 obj.lat = lngLat;
@@ -537,7 +534,7 @@
             adjustBounds: function()
             {
                 // マーカー1つ以下なら実行しない
-                if(Markers.length <= 1) {
+                if(this.Markers.length <= 1) {
                     return;
                 }
 
@@ -548,12 +545,12 @@
                 // mark:    integer マーカーポイントのインデックス
 
                 // 領域に全てのマーカー座標を追加
-                for(mark in Markers) {
-                    bounds.extend (Markers[mark].position);
+                for(mark in this.Markers) {
+                    bounds.extend (this.Markers[mark].position);
                 }
 
                 // 地図表示領域の変更を反映します。
-                map.fitBounds (bounds);
+                this.map.fitBounds (bounds);
             },
         //}
 
@@ -564,15 +561,15 @@
             {
                 var directionsService = new google.maps.DirectionsService();
 
-                requestOptions.origin = startSpot;
+                this.requestOptions.origin = startSpot;
 
                 directionsDisplay = new google.maps.DirectionsRenderer({
-                    "map": map,
+                    "map": this.map,
                     "preserveViewport": true, //現在のビューを保持する
                     "draggable": true
                 });
 
-                directionsService.route(requestOptions, function(response, status) {
+                directionsService.route(this.requestOptions, function(response, status) {
 
                     if (status == google.maps.DirectionsStatus.OK) {
 
@@ -605,16 +602,16 @@
                 var distance = 0;
                 var directionsService = new google.maps.DirectionsService();
 
-                requestOptions.origin = startSpot;
-                requestOptions.destination = endSpot;
+                this.requestOptions.origin = startSpot;
+                this.requestOptions.destination = endSpot;
 
                 directionsDisplay = new google.maps.DirectionsRenderer({
-                    "map": map,
+                    "map": this.map,
                     "preserveViewport": true, //現在のビューを保持する
                     "draggable": true
                 });
 
-                directionsService.route(requestOptions, function(response, status) {
+                directionsService.route(this.requestOptions, function(response, status) {
 
                     if (status == google.maps.DirectionsStatus.OK) {
 
@@ -637,7 +634,7 @@
 
         // 海抜取得
         //{
-            getElevation: function(location, id)
+            getElevation: function(location, element_id)
             {
                 var request = {locations: new Array(location)};
 
@@ -647,9 +644,9 @@
 
                     if(status == google.maps.ElevationStatus.OK) {
                         var r = Math.round(response[0].elevation * 100) / 100;
-                        document.getElementById(id).value = r + "m";
+                        document.getElementById(element_id).value = r + "m";
                     } else {
-                        document.getElementById(id).value = "取得できませんでした。";
+                        document.getElementById(element_id).value = "取得できませんでした。";
                     }
 
                 });
