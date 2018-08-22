@@ -92,12 +92,14 @@
 
         // GoogleMap 表示関数
         //{
-            makeGMap: function()
+            makeGMap: function(element_id)
             {
                 // Internet Explorer 5.5 is Not Available
                 if(navigator.userAgent.indexOf("MSIE 5.5") != -1) {
                     return null;
                 }
+
+                this.id = element_id;
 
                 this.myOptions.center = new google.maps.LatLng(this.default_location.lat, this.default_location.lng);
 
