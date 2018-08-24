@@ -8,7 +8,7 @@ Google Maps JavaScript APIを利用しやすいようにメソッドやプロパ
 ## Install
 
 ダウンロードしてHTMLに読み込んでください。
-* [myGoogleMap](https://raw.github.com/ksproducts/myGoogleMap/master/myGoogleMap.js)
+* [Download Zip](https://github.com/ksproducts/myGoogleMap/archive/master.zip)
 
 ## Usage
 
