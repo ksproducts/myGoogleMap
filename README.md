@@ -7,16 +7,16 @@ Google Maps JavaScript APIを利用しやすいようにメソッドやプロパ
 
 ## Usage
 
-#### myGoogleMap
+### myGoogleMap
 ```javascript
 myGoogleMap.makeGMap('map');
 ```
 
-#### myPolygon
+### myPolygon
 ```javascript
 myPolygon.make(myGoogleMap.map);
 ```
-#### myStreetView
+### myStreetView
 ```javascript
 myStreetView.make('streetview', 35.658582050535614, 139.74543124437332);
 ```
