@@ -1,6 +1,8 @@
 myGoogleMap
 ====
 
+![Badge Status](https://services-as-a-ci)
+
 # Overview
 
 Google Maps JavaScript APIを利用しやすいようにメソッドやプロパティを定義したクラスライブラリ
