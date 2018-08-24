@@ -93,7 +93,7 @@
 
         // GoogleMap 表示関数
         //{
-            makeGMap: function(element_id)
+            make: function(element_id)
             {
                 // Internet Explorer 5.5 is Not Available
                 if(navigator.userAgent.indexOf("MSIE 5.5") != -1) {

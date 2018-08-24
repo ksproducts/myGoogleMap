@@ -9,7 +9,7 @@ Google Maps JavaScript APIを利用しやすいようにメソッドやプロパ
 
 ### myGoogleMap
 ```javascript
-myGoogleMap.makeGMap('map');
+myGoogleMap.make('map');
 ```
 
 ### myPolygon
