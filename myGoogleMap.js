@@ -13,6 +13,7 @@
 //{
     var myGoogleMap = {
 
+        // GoogleMapを表示するエレメントのID
         id: null,
 
         // GoogleMapインスタンス用

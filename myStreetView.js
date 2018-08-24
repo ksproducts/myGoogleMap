@@ -12,10 +12,16 @@
 //{
     var myStreetView = {
 
+        // ストリートビューを表示するエレメントのID
         id: null,
-        radius: 50, //ストリートビューを検索する半径
+
+        // StreetViewインスタンス用
         panorama: null,
 
+        // ストリートビューを検索する半径（単位：m）
+        radius: 50,
+
+        // StreetViewのプロパティ
         panoramaOptions: {
             position: "",
             pov: {
@@ -25,9 +31,9 @@
             }
         },
 
-        makeStreetView: function(id, stLat, stLon)
+        makeStreetView: function(element_id, stLat, stLon)
         {
-            this.id = id;
+            this.id = element_id;
 
             document.getElementById(this.id).innerHTML = "";
 

@@ -13,6 +13,7 @@
 //{
     var myPolygon = {
 
+        // GoogleMapインスタンス用
         map: null,
 
         // Polygon変数
