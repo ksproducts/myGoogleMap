@@ -9,7 +9,7 @@ Google Maps JavaScript APIを利用しやすいようにメソッドやプロパ
 * [Download Zip](https://github.com/ksproducts/myGoogleMap/archive/master.zip)
 
 ## Requirement
-- Google Maps JavaScript API v3+
+* Google Maps JavaScript API v3+
 
 ## Usage
 
