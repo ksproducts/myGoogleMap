@@ -82,6 +82,44 @@
             });
         },
 
+        makeStaticView: function(element_id, stLat, stLon, width, height)
+        {
+            this.id = element_id;
+
+            document.getElementById(this.id).innerHTML = "";
+
+            targetLatLng = new google.maps.LatLng(stLat, stLon);
+            LocationRequest.location = targetLatLng;
+
+            stClient = new google.maps.StreetViewService();
+            stClient.getPanorama(LocationRequest, function(result, status) {
+                if (status == google.maps.StreetViewStatus.OK) {
+
+                    var nearestLatLng = result.location.latLng;
+
+                    var yaw = stViewClass.calcYaw(nearestLatLng, targetLatLng);
+
+                    document.getElementById(stViewClass.id).innerHTML = "<img src=\"https://maps.googleapis.com/maps/api/streetview?"
+                        + "size=" + width + "x" + height + "&location=" + nearestLatLng.lat() + "," + nearestLatLng.lng() + "&heading=" + yaw + "&pitch=0&fov=120&zoom=0&key=[YOUR_API_KEY]\" alt=\"\">";
+
+                } else if (status == google.maps.StreetViewStatus.ZERO_RESULTS) {
+
+                    //alert("半径" + stViewClass.radius + "m以内のストリートビューが見つかりませんでした。");
+                    stViewClass.Error(600);
+
+                } else if (status == google.maps.StreetViewStatus.UNKNOWN_ERROR) {
+
+                    //alert("google.maps.StreetViewServiceの不明なエラーです。");
+                    stViewClass.Error(600);
+
+                } else {
+
+                    this.Error(600);
+
+                }
+            });
+        },
+
         Error: function(errorCode)
         {
             if (errorCode == 600) {
