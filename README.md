@@ -13,9 +13,9 @@ Google Maps JavaScript APIを利用しやすいようにメソッドやプロパ
 ## Usage
 
 ### myGoogleMap
-```javascript
+`javascript
 myGoogleMap.make('map');
-```
+`
 
 ### myPolygon
 ```javascript
