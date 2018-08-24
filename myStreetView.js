@@ -31,7 +31,7 @@
             }
         },
 
-        makeStreetView: function(element_id, stLat, stLon)
+        make: function(element_id, stLat, stLon)
         {
             this.id = element_id;
 
