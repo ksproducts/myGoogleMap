@@ -91,6 +91,7 @@
             },
         //}
 
+
         // GoogleMap 表示関数
         //{
             make: function(element_id)
@@ -120,6 +121,7 @@
             },
         //}
 
+
         // 表示位置設定
         //{
             go: function(lat, lng)
@@ -130,6 +132,7 @@
             },
         //}
 
+
         // 指定地点へアニメーション移動
         //{
             move: function(lat, lng)
@@ -139,6 +142,7 @@
                 this.map.panTo(targetPoint);
             },
         //}
+
 
         // イベントの追加
         //{
@@ -224,6 +228,7 @@
             },
         //}
 
+
         // ズームメソッド
         //{
             myZoomIn: function()
@@ -277,65 +282,6 @@
         //}
 
 
-        // GoogleMap ポイント表示関数（住所から）
-        //{
-            showAddress: function(addr)
-            {
-                var geocoder = new google.maps.Geocoder();
-                addr = decodeURI(addr);
-
-                if(geocoder) {
-
-                    geocoder.geocode(
-                        {address: addr},
-                        function(geo_result, geo_response)
-                        {
-                            if(geo_response == "OK") {
-                                var myMetric = myGoogleMap.myOptions.metric;
-                                myGoogleMap.myOptions.metric = false;
-                                myGoogleMap.createMarker(geo_result[0].geometry.location.lat(), geo_result[0].geometry.location.lng(), true);
-                                myGoogleMap.myOptions.metric = myMetric;
-                            } else {
-                                //alert(geo_response);
-                                alert("「" + addr + "」が見つかりませんでした。");
-                            }
-                        }
-
-                );}
-            },
-        //}
-
-        // 座標から住所を取得
-        //{
-            cnvCoord2Address: function(location)
-            {
-                var geocoder = new google.maps.Geocoder();
-
-                if(geocoder) {
-
-                    geocoder.geocode(
-                        {location: location},
-                        function(geo_result, geo_response)
-                        {
-                            if(geo_response == "OK") {
-
-                                var address = geo_result[0].formatted_address;
-
-                                alert(address);
-
-                            } else {
-
-                                alert(geo_response + "\n\n変換できませんでした。");
-
-                            }
-                        }
-
-                );}
-
-            },
-        //}
-
-
         // GoogleMap ポイント表示関数（座標から）
         //{
             createMarker: function(lat, lng, toCenter)
@@ -382,7 +328,66 @@
         //}
 
 
-        // 緯度・経度日本測地系・世界測地系(WGS84)ｎ相互変換
+        // GoogleMap ポイント表示関数（住所から）
+        //{
+            createMarkerByAddress: function(addr)
+            {
+                var geocoder = new google.maps.Geocoder();
+                addr = decodeURI(addr);
+
+                if(geocoder) {
+
+                    geocoder.geocode(
+                        {address: addr},
+                        function(geo_result, geo_response)
+                        {
+                            if(geo_response == "OK") {
+                                var myMetric = myGoogleMap.myOptions.metric;
+                                myGoogleMap.myOptions.metric = false;
+                                myGoogleMap.createMarker(geo_result[0].geometry.location.lat(), geo_result[0].geometry.location.lng(), true);
+                                myGoogleMap.myOptions.metric = myMetric;
+                            } else {
+                                //alert(geo_response);
+                                alert("「" + addr + "」が見つかりませんでした。");
+                            }
+                        }
+
+                );}
+            },
+        //}
+
+
+        // 座標から住所を取得
+        //{
+            cnvCoord2Address: function(location)
+            {
+                var geocoder = new google.maps.Geocoder();
+
+                if(geocoder) {
+
+                    geocoder.geocode(
+                        {location: location},
+                        function(geo_result, geo_response)
+                        {
+                            if(geo_response == "OK") {
+
+                                var address = geo_result[0].formatted_address;
+
+                                alert(address);
+
+                            } else {
+
+                                alert(geo_response + "\n\n変換できませんでした。");
+
+                            }
+                        }
+
+                );}
+
+            },
+        //}
+
+        // 緯度・経度日本測地系・世界測地系(WGS84)相互変換
         //{
             cnvCoords: function(lat, lng, metric)
             {
@@ -652,6 +657,7 @@
 
             },
         //}
+
 
         // 海抜取得
         //{
