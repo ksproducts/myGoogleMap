@@ -120,6 +120,26 @@
             },
         //}
 
+        // 表示位置設定
+        //{
+            go: function(lat, lng)
+            {
+                targetPoint = new google.maps.LatLng(lat, lng);
+
+                this.map.setCenter(targetPoint);
+            },
+        //}
+
+        // 指定地点へアニメーション移動
+        //{
+            move: function(lat, lng)
+            {
+                targetPoint = new google.maps.LatLng(lat, lng);
+
+                this.map.panTo(targetPoint);
+            },
+        //}
+
         // イベントの追加
         //{
             addEvent: function()
@@ -135,7 +155,7 @@
                 google.maps.event.removeListener(this.resize_listener);
                 this.resize_listener = google.maps.event.addListener(this.map, "resize", function(LatLng)
                 {
-                    if(LatLng != null) myGoogleMap.map.setCenter(LatLng, myGoogleMap.myOptions.zoom);
+                    if(LatLng != null) myGoogleMap.map.setCenter(LatLng);
                 });
 
                 // divリサイズ時mapイベントのトリガー
@@ -287,7 +307,6 @@
 
         // 座標から住所を取得
         //{
-            geocodeAddress: "",
             cnvCoord2Address: function(location)
             {
                 var geocoder = new google.maps.Geocoder();
@@ -300,14 +319,13 @@
                         {
                             if(geo_response == "OK") {
 
-                                var tmpadd = "";
-                                tmpadd = geo_result[0].formatted_address.replace("日本, ", "");
+                                var address = geo_result[0].formatted_address;
 
-                                myGoogleMap.geocodeAddress = tmpadd;
+                                alert(address);
 
                             } else {
-                                //alert(geo_response + "\n\n変換できませんでした。");
-                                myGoogleMap.geocodeAddress = geo_response + "\n\n変換できませんでした。";
+
+                                alert(geo_response + "\n\n変換できませんでした。");
 
                             }
                         }
@@ -331,10 +349,10 @@
 
                 targetPoint = new google.maps.LatLng(lat, lng);
 
-                this.markerOptions.map = this.map;
+                this.markerOptions.map      = this.map;
                 this.markerOptions.position = targetPoint;
-                this.markerOptions.icon = this.icon;
-                this.markerOptions.shadow = this.icon_shadow;
+                this.markerOptions.icon     = this.icon;
+                this.markerOptions.shadow   = this.icon_shadow;
 
                 var marker = new google.maps.Marker(this.markerOptions);
 
@@ -359,7 +377,7 @@
 
                 }
 
-                if(toCenter) this.map.setCenter(targetPoint, this.myOptions.zoom);
+                if(toCenter) this.map.setCenter(targetPoint);
             },
         //}
 
@@ -461,7 +479,7 @@
 
                         if(this.Markers.length > 1) {
                             var coords = this.getAverage();
-                            this.map.setCenter(new google.maps.LatLng(coords.lat, coords.lng), this.map.getZoom());
+                            this.map.setCenter(new google.maps.LatLng(coords.lat, coords.lng));
                         }
 
                     }
