@@ -145,7 +145,7 @@
             addEvent: function()
             {
                 // 読み込み完了時に一度だけ実行
-                google.maps.event.addListenerOnce(map, "idle", function()
+                google.maps.event.addListenerOnce(this.map, "idle", function()
                 {
                     // code
                 });
