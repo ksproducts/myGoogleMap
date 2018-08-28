@@ -65,7 +65,6 @@
             },
         //}
 
-
         // GoogleMap 表示関数
         //{
             make: function(element_id)
@@ -95,7 +94,6 @@
             },
         //}
 
-
         // 表示位置設定
         //{
             go: function(lat, lng)
@@ -106,7 +104,6 @@
             },
         //}
 
-
         // 指定地点へアニメーション移動
         //{
             move: function(lat, lng)
@@ -116,7 +113,6 @@
                 this.map.panTo(targetPoint);
             },
         //}
-
 
         // イベントの追加
         //{
@@ -202,7 +198,6 @@
             },
         //}
 
-
         // ズームメソッド
         //{
             myZoomIn: function()
@@ -215,7 +210,6 @@
                 this.map.setZoom(this.map.getZoom() - 1);
             },
         //}
-
 
         // 座標から住所を取得
         //{
@@ -269,7 +263,6 @@
             },
         //}
 
-
         // 座標変換関数
         //{
             calc: function(data)
@@ -282,7 +275,6 @@
                 return dosu + '度' + min + '分' + sec + '.' + amari + '秒' + '[' + data + ']';
             },
         //}
-
 
         // 座標範囲の算出
         //{
@@ -315,7 +307,6 @@
                 return scope;
             },
         //}
-
 
         // ルート表示
         //{
@@ -356,7 +347,6 @@
             },
         //}
 
-
         // 距離計算
         //{
             calcLength: function(startSpot, endSpot)
@@ -394,7 +384,6 @@
             },
         //}
 
-
         // 海抜取得
         //{
             getElevation: function(location, element_id)
@@ -416,7 +405,6 @@
             },
         //}
 
-
         // マーカー関連
         //{
             marker: {
@@ -434,6 +422,7 @@
                 // Marker Property
                 //{
                     options: {
+                        map: null,
                         title: null,
                         icon: null,
                         shadow: null,
@@ -444,7 +433,6 @@
                         enableInfoWindow: false, //カスタム追加（情報ウィンドウを表示するか）
                     },
                 //}
-
 
                 // アイコン作成メソッド
                 //{
@@ -483,7 +471,6 @@
                         return icon;
                     },
                 //}
-
 
                 // GoogleMap ポイント表示関数（座標から）
                 //{
@@ -535,15 +522,14 @@
                                     content: "test"
                                 };
                                 var infoWindow = new google.maps.InfoWindow(iwOptions);
-                                infoWindow.open(myGoogleMap.map, marker);
+                                infoWindow.open(myGoogleMap.marker.options.map, marker);
                             });
 
                         }
 
-                        if(toCenter) myGoogleMap.map.setCenter(targetPoint);
+                        if(toCenter) this.options.map.setCenter(targetPoint);
                     },
                 //}
-
 
                 // GoogleMap ポイント表示関数（住所から）
                 //{
@@ -572,7 +558,6 @@
                         );}
                     },
                 //}
-
 
                 // 200m範囲内に近接するポイントを離す
                 //{
@@ -643,16 +628,12 @@
                     },
                 //}
 
-
                 // マーカー達の平均緯度経度の算出
                 //{
                     getAverage: function()
                     {
                         var lngLat = 0; // 緯度加算用
                         var lngLng = 0; // 経度加算用
-
-                        // Markers: Array   マーカーポイントを格納した配列
-                        // mark:    integer マーカーポイントのインデックス
 
                         for(mark in this.array) {
                             var m = this.array[mark].position; // [mark]番目の座標を取得
@@ -672,7 +653,6 @@
                     },
                 //}
 
-
                 // 地図表示領域をマーカー位置に合わせて拡大
                 //{
                     adjustBounds: function()
@@ -684,9 +664,6 @@
 
                         // 表示領域を生成します。
                         var bounds = new google.maps.LatLngBounds();
-
-                        // Markers: Array   マーカーポイントを格納した配列
-                        // mark:    integer マーカーポイントのインデックス
 
                         // 領域に全てのマーカー座標を追加
                         for(mark in this.array) {
@@ -701,7 +678,6 @@
             },
         //}
 
-
         // ポリライン関連
         //{
             polyline: {
@@ -714,9 +690,9 @@
 
                 // 各種プロパティ
                 options: {
-                    clickable: false,
-                    draggable: false,
-                    editable: false,
+                    clickable: false,       // クリックの可否
+                    draggable: false,       // ドラッグの可否
+                    editable: false,        // 編集の可否
                     map: null,              // GoogleMapのインスタンス
                     path: new Array(),      // 座標の配列
                     strokeColor: "#000000", // 線の色
@@ -724,31 +700,35 @@
                     strokeWeight: 3,        // 線の太さ（ピクセル）
                 },
 
-                add: function()
+                add: function(latLngArray)
                 {
-                    this.obj = new google.maps.Polyline(this.options);
+                    this.options.map  = myGoogleMap.map;
+                    this.options.path = latLngArray;
+
+                    this.array.push(new google.maps.Polyline(this.options));
 
                     this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
                     {
 
                         // 表示領域を生成します。
-                        var bounds = myGoogleMap.map.getBounds();
+                        var bounds = myGoogleMap.polyline.options.map.getBounds();
         
-                        //ポリゴンが境界内に含まれるかどうかで表示・非表示を切り替え
+                        //ポリラインの表示領域が境界内に含まれるかどうかで表示・非表示を切り替え
                         var pBounds = new google.maps.LatLngBounds();
-                        var myPoly = myPolygon.poly.getPaths();
         
-                        myPoly.forEach( function( value, index, array) {
-                            value.forEach( function( val ) {
+                        myGoogleMap.polyline.array.forEach( function( value ) {
+
+                            value.getPath().forEach( function( val ) {
                                 pBounds.extend(val);
                             });
-                        });
+
+                            if(bounds.intersects(pBounds)) {
+                                value.setMap(myGoogleMap.polyline.options.map);
+                            } else {
+                                value.setMap(null);
+                            }
         
-                        if(bounds.intersects(pBounds)) {
-                            myPolygon.poly.setMap(myPolygon.map);
-                        } else {
-                            myPolygon.poly.setMap(null);
-                        }
+                        });
         
                     });
 
@@ -757,6 +737,68 @@
             },
         //}
 
+        // ポリゴン関連
+        //{
+            polygon: {
+
+                // ポリゴン配列用
+                array: null,
+
+                // イベントリスナー
+                boundsChanged_listener: null, // 表示領域変更
+
+                // 各種プロパティ
+                options: {
+                    clickable: false,       // クリックの可否
+                    draggable: false,       // ドラッグの可否
+                    editable: false,        // 編集の可否
+                    fillColor: "#ffffff",   // 塗り潰し色
+                    fillOpacity: 0.6,       // 塗り潰しの不透明度（0.0-1.0）
+                    map: null,              // GoogleMapのインスタンス
+                    paths: new Array(),     // 座標の配列
+                    strokeColor: "#000000", // 線の色
+                    strokeOpacity: 0.8,     // 線の不透明度（0.0-1.0）
+                    strokeWeight: 3,        // 線の太さ（ピクセル）
+                },
+
+                add: function(latLngArray)
+                {
+                    this.options.map   = myGoogleMap.map;
+                    this.options.paths = latLngArray;
+
+                    this.array.push(new google.maps.Polygon(this.options));
+
+                    this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
+                    {
+
+                        // 表示領域を生成します。
+                        var bounds = myGoogleMap.polygon.options.map.getBounds();
+
+                        //ポリゴンが境界内に含まれるかどうかで表示・非表示を切り替え
+                        myGoogleMap.polygon.array.forEach( function( value ) {
+
+                            var pBounds = new google.maps.LatLngBounds();
+
+                            value.forEach( function( val ) {
+                                val.getPaths().forEach( function( v ) {
+                                    pBounds.extend(v);
+                                }
+                            });
+
+                            if(bounds.intersects(pBounds)) {
+                                value.setMap(myGoogleMap.polygon.options.map);
+                            } else {
+                                value.setMap(null);
+                            }
+
+                        });
+
+                    });
+
+                },
+
+            },
+        //}
 
     }
 //}
