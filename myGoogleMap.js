@@ -19,16 +19,6 @@
         // GoogleMapインスタンス用
         map: null,
 
-        // アイコンフラグ
-        icon: null,
-        icon_shadow: null,
-
-        // マーカー配列用
-        Markers: null,
-
-        // タイマーID
-        timerID: null,
-
         // イベントリスナー
         resize_listener: null,        // リサイズ
         click_listener: null,         // クリック
@@ -60,25 +50,9 @@
                 scrollwheel: false,
                 zoomControl: true,
                 zoom: 11,
-                maxzoom: 21,          //カスタム追加（拡大の最大値：0～21（実際には20まで））
-                metric: false,        //カスタム追加（世界測地系に変換するか）
-                addMarkers: false,    //カスタム追加（クリックしてマーカーを追加するかどうか）
-                adjustMarkers: false, //カスタム追加（近接するマーカーを位置調整するかどうか）
-                adjustBounds: false   //カスタム追加（全てのマーカーが表示されるように自動調節するかどうか）
-            },
-        //}
-
-        // Marker Property
-        //{
-            markerOptions: {
-                title: null,
-                icon: null,
-                shadow: null,
-                draggable: false,
-                crossOnDrag: true,          //ドラッグ中の十字マーク表示
-                //animation: google.maps.Animation.DROP, //(BOUNCE|DROP)
-                enableDelete: false,        //カスタム追加（マーカークリックで削除するか）
-                enableInfoWindow: false     //カスタム追加（情報ウィンドウを表示するか）
+                maxzoom: 21,       //カスタム追加（拡大の最大値：0～21（実際には20まで））
+                metric: false,     //カスタム追加（世界測地系に変換するか）
+                addMarkers: false, //カスタム追加（クリックしてマーカーを追加するかどうか）
             },
         //}
 
@@ -112,10 +86,10 @@
                 this.map = new google.maps.Map(document.getElementById(this.id), this.myOptions);
 
                 // マーカー配列の初期化
-                this.Markers = new Array();
+                this.marker.array = new Array();
 
-                //this.icon        = this.makeIcon();
-                //this.icon_shadow = this.makeIconShadow();
+                //this.marker.icon        = this.marker.makeIcon();
+                //this.marker.icon_shadow = this.marker.makeIconShadow();
 
                 this.addEvent();
             },
@@ -175,7 +149,7 @@
                     if(myGoogleMap.myOptions.addMarkers) {
 
                         if(e) {
-                            myGoogleMap.createMarker(e.latLng.lat(), e.latLng.lng(), false);
+                            myGoogleMap.marker.add(e.latLng.lat(), e.latLng.lng(), false);
                         }
                     }
                 });
@@ -200,14 +174,14 @@
                     var bounds = myGoogleMap.map.getBounds();
 
                     //マーカーが境界内に含まれるかどうかで表示・非表示を切り替え
-                    for(mark in myGoogleMap.Markers) {
+                    for(mark in myGoogleMap.marker.array) {
 
-                        if(bounds.contains(myGoogleMap.Markers[mark].position)) {
-                            if(myGoogleMap.Markers[mark].getMap() == null) {
-                                myGoogleMap.Markers[mark].setMap(myGoogleMap.map);
+                        if(bounds.contains(myGoogleMap.marker.array[mark].position)) {
+                            if(myGoogleMap.marker.array[mark].getMap() == null) {
+                                myGoogleMap.marker.array[mark].setMap(myGoogleMap.map);
                             }
                         } else {
-                            myGoogleMap.Markers[mark].setMap(null);
+                            myGoogleMap.marker.array[mark].setMap(null);
                         }
 
                     }
@@ -239,120 +213,6 @@
             myZoomOut: function()
             {
                 this.map.setZoom(this.map.getZoom() - 1);
-            },
-        //}
-
-
-        // アイコン作成メソッド
-        //{
-            // 実体
-            makeIcon: function()
-            {
-                var icon = new google.maps.MarkerImage(
-                    "./images/gicon.png",
-                    new google.maps.Size( 30, 36 ),
-                    new google.maps.Point( 0, 0 ),
-                    new google.maps.Point( 15, 36 )
-                );
-                return icon;
-            },
-            // 影
-            makeIconShadow: function()
-            {
-                var icon = new google.maps.MarkerImage(
-                    "./images/gicon_shadow.png",
-                    new google.maps.Size( 32, 33 ),
-                    new google.maps.Point( 0, 0 ),
-                    new google.maps.Point( 0, 33 )
-                );
-                return icon;
-            },
-            // 数字アイコン
-            makeNumIcon: function(n)
-            {
-                var icon = new google.maps.MarkerImage("//chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+ (n + 1) + "|ff7e73|000000");
-                return icon;
-            },
-            // 数字アイコン影
-            makeNumIconShadow: function()
-            {
-                var icon = new google.maps.MarkerImage("//chart.apis.google.com/chart?chst=d_map_pin_shadow", null, null, new google.maps.Point(12, 35) );
-                return icon;
-            },
-        //}
-
-
-        // GoogleMap ポイント表示関数（座標から）
-        //{
-            createMarker: function(lat, lng, toCenter)
-            {
-                // 世界測地系に変換
-                if(this.myOptions.metric) {
-                    var obj = this.cnvCoords(lat, lng, true);
-                    lat = obj.lat;
-                    lng = obj.lng;
-                }
-
-                targetPoint = new google.maps.LatLng(lat, lng);
-
-                this.markerOptions.map      = this.map;
-                this.markerOptions.position = targetPoint;
-                this.markerOptions.icon     = this.icon;
-                this.markerOptions.shadow   = this.icon_shadow;
-
-                var marker = new google.maps.Marker(this.markerOptions);
-
-                // グローバル配列にマーカーを追加
-                var i = this.Markers.push(marker);
-                i--;
-
-                if(this.markerOptions.enableDelete) {
-
-                    google.maps.event.addListener(marker, "click", function(e)
-                    {
-                        marker.setMap(null); //マーカーの削除
-                        myGoogleMap.Markers.splice(i, 1);
-
-                        // 情報ウィンドウの表示
-                        //var iwOptions = {
-                        //    content: "test"
-                        //};
-                        //var infoWindow = new google.maps.InfoWindow(iwOptions);
-                        //infoWindow.open(myGoogleMap.map, marker);
-                    });
-
-                }
-
-                if(toCenter) this.map.setCenter(targetPoint);
-            },
-        //}
-
-
-        // GoogleMap ポイント表示関数（住所から）
-        //{
-            createMarkerByAddress: function(addr)
-            {
-                var geocoder = new google.maps.Geocoder();
-                addr = decodeURI(addr);
-
-                if(geocoder) {
-
-                    geocoder.geocode(
-                        {address: addr},
-                        function(geo_result, geo_response)
-                        {
-                            if(geo_response == "OK") {
-                                var myMetric = myGoogleMap.myOptions.metric;
-                                myGoogleMap.myOptions.metric = false;
-                                myGoogleMap.createMarker(geo_result[0].geometry.location.lat(), geo_result[0].geometry.location.lng(), true);
-                                myGoogleMap.myOptions.metric = myMetric;
-                            } else {
-                                //alert(geo_response);
-                                alert("「" + addr + "」が見つかりませんでした。");
-                            }
-                        }
-
-                );}
             },
         //}
 
@@ -424,104 +284,6 @@
         //}
 
 
-        // 200m範囲内に近接するポイントを離す
-        //{
-            adjustInterval: function()
-            {
-                var f = false; // ループ用のフラグ
-
-                // Markers: Array   マーカーポイントを格納した配列
-                // mark:    integer マーカーポイントのインデックス
-
-                for(mark in this.Markers) {
-
-                    var m      = this.Markers[mark].position; // [mark]番目の座標を取得
-                    var radius = this.calcScope();            // 座標範囲の算出
-
-                    // [mark]番目のポイントを中心とした矩形領域を作成
-                    // （緯度経度は北東にいくほど値が大きくなる）
-                    //{
-                        // 南西の隅
-                        var sw = new google.maps.LatLng(m.lat() - radius[0], m.lng() - radius[1]);
-                        // 北東の隅
-                        var ne = new google.maps.LatLng(m.lat() + radius[0], m.lng() + radius[1]);
-
-                        var llB = new google.maps.LatLngBounds(sw, ne);
-                    //}
-
-                    // 他のポイントが境界内に含まれるか
-                    //{
-                        for(ma in this.Markers) {
-
-                            if(mark != ma) {
-
-                                if(llB.contains(this.Markers[ma].position)) { // 境界内に含まれる
-
-                                    var n = this.Markers[ma].position;
-                                    var toLatLng = new google.maps.LatLng(m.lat() + (m.lat() - n.lat()), m.lng() + (m.lng() - n.lng()));
-
-                                    this.Markers[mark].setPosition(toLatLng);
-
-                                    f = true; // ループさせるため、フラグを立てる
-
-                                }
-
-                            }
-
-                        }
-                    //}
-                }
-
-                // フラグがtrueのとき、再起呼び出し
-                //{
-                    if(f) {
-
-                        this.timerID = setTimeout("myGoogleMap.adjustInterval()", 100);
-
-                    } else {
-
-                        clearTimeout(this.timerID); // 終了させる
-
-                        if(this.Markers.length > 1) {
-                            var coords = this.getAverage();
-                            this.map.setCenter(new google.maps.LatLng(coords.lat, coords.lng));
-                        }
-
-                    }
-                //}
-            },
-        //}
-
-
-        // マーカー達の平均緯度経度の算出
-        //{
-            getAverage: function()
-            {
-                var lngLat = 0; // 緯度加算用
-                var lngLng = 0; // 経度加算用
-
-                // Markers: Array   マーカーポイントを格納した配列
-                // mark:    integer マーカーポイントのインデックス
-
-                for(mark in this.Markers) {
-                    var m = this.Markers[mark].position; // [mark]番目の座標を取得
-
-                    lngLat += m.lat();
-                    lngLng += m.lng();
-                }
-
-                lngLat /= this.Markers.length;
-                lngLng /= this.Markers.length;
-
-                var obj = new Object();
-                obj.lat = lngLat;
-                obj.lng = lngLng;
-
-                return obj;
-            },
-        //}
-
-
         // 座標範囲の算出
         //{
             calcScope: function()
@@ -551,32 +313,6 @@
                 scope[1] = lng_scope;
 
                 return scope;
-            },
-        //}
-
-
-        // 地図表示領域をマーカー位置に合わせて拡大
-        //{
-            adjustBounds: function()
-            {
-                // マーカー1つ以下なら実行しない
-                if(this.Markers.length <= 1) {
-                    return;
-                }
-
-                // 表示領域を生成します。
-                var bounds = new google.maps.LatLngBounds();
-
-                // Markers: Array   マーカーポイントを格納した配列
-                // mark:    integer マーカーポイントのインデックス
-
-                // 領域に全てのマーカー座標を追加
-                for(mark in this.Markers) {
-                    bounds.extend (this.Markers[mark].position);
-                }
-
-                // 地図表示領域の変更を反映します。
-                this.map.fitBounds (bounds);
             },
         //}
 
@@ -679,6 +415,278 @@
                 });
             },
         //}
+
+
+        // マーカー関連
+        //{
+            marker: {
+
+                // アイコン
+                icon: null,
+                icon_shadow: null,
+
+                // マーカー配列用
+                array: null,
+
+                // タイマーID
+                timerID: null,
+
+                // Marker Property
+                //{
+                    options: {
+                        title: null,
+                        icon: null,
+                        shadow: null,
+                        draggable: false,
+                        crossOnDrag: true,       //ドラッグ中の十字マーク表示
+                        //animation: google.maps.Animation.DROP, //(BOUNCE|DROP)
+                        enableDelete: false,     //カスタム追加（マーカークリックで削除するか）
+                        enableInfoWindow: false, //カスタム追加（情報ウィンドウを表示するか）
+                    },
+                //}
+
+
+                // アイコン作成メソッド
+                //{
+                    // 実体
+                    makeIcon: function()
+                    {
+                        var icon = new google.maps.MarkerImage(
+                            "./images/gicon.png",
+                            new google.maps.Size( 30, 36 ),
+                            new google.maps.Point( 0, 0 ),
+                            new google.maps.Point( 15, 36 )
+                        );
+                        return icon;
+                    },
+                    // 影
+                    makeIconShadow: function()
+                    {
+                        var icon = new google.maps.MarkerImage(
+                            "./images/gicon_shadow.png",
+                            new google.maps.Size( 32, 33 ),
+                            new google.maps.Point( 0, 0 ),
+                            new google.maps.Point( 0, 33 )
+                        );
+                        return icon;
+                    },
+                    // 数字アイコン
+                    makeNumIcon: function(n)
+                    {
+                        var icon = new google.maps.MarkerImage("//chart.apis.google.com/chart?chst=d_map_pin_letter&chld="+ (n + 1) + "|ff7e73|000000");
+                        return icon;
+                    },
+                    // 数字アイコン影
+                    makeNumIconShadow: function()
+                    {
+                        var icon = new google.maps.MarkerImage("//chart.apis.google.com/chart?chst=d_map_pin_shadow", null, null, new google.maps.Point(12, 35) );
+                        return icon;
+                    },
+                //}
+
+
+                // GoogleMap ポイント表示関数（座標から）
+                //{
+                    add: function(lat, lng, toCenter)
+                    {
+                        // 世界測地系に変換
+                        if(myGoogleMap.myOptions.metric) {
+                            var obj = myGoogleMap.cnvCoords(lat, lng, true);
+                            lat = obj.lat;
+                            lng = obj.lng;
+                        }
+
+                        targetPoint = new google.maps.LatLng(lat, lng);
+
+                        this.options.map      = myGoogleMap.map;
+                        this.options.position = targetPoint;
+                        this.options.icon     = this.icon;
+                        this.options.shadow   = this.icon_shadow;
+
+                        var marker = new google.maps.Marker(this.options);
+
+                        // グローバル配列にマーカーを追加
+                        var i = this.array.push(marker);
+                        i--;
+
+                        if(this.options.enableDelete) {
+
+                            google.maps.event.addListener(marker, "click", function(e)
+                            {
+                                marker.setMap(null); //マーカーの削除
+                                this.array.splice(i, 1);
+
+                                // 情報ウィンドウの表示
+                                //var iwOptions = {
+                                //    content: "test"
+                                //};
+                                //var infoWindow = new google.maps.InfoWindow(iwOptions);
+                                //infoWindow.open(myGoogleMap.map, marker);
+                            });
+
+                        }
+
+                        if(toCenter) myGoogleMap.map.setCenter(targetPoint);
+                    },
+                //}
+
+
+                // GoogleMap ポイント表示関数（住所から）
+                //{
+                    addByAddress: function(addr)
+                    {
+                        var geocoder = new google.maps.Geocoder();
+                        addr = decodeURI(addr);
+
+                        if(geocoder) {
+
+                            geocoder.geocode(
+                                {address: addr},
+                                function(geo_result, geo_response)
+                                {
+                                    if(geo_response == "OK") {
+                                        var myMetric = myGoogleMap.myOptions.metric;
+                                        myGoogleMap.myOptions.metric = false;
+                                        this.add(geo_result[0].geometry.location.lat(), geo_result[0].geometry.location.lng(), true);
+                                        myGoogleMap.myOptions.metric = myMetric;
+                                    } else {
+                                        //alert(geo_response);
+                                        alert("「" + addr + "」が見つかりませんでした。");
+                                    }
+                                }
+
+                        );}
+                    },
+                //}
+
+
+                // 200m範囲内に近接するポイントを離す
+                //{
+                    adjustInterval: function()
+                    {
+                        var f = false; // ループ用のフラグ
+
+                        // Markers: Array   マーカーポイントを格納した配列
+                        // mark:    integer マーカーポイントのインデックス
+
+                        for(mark in this.array) {
+
+                            var m      = this.array[mark].position; // [mark]番目の座標を取得
+                            var radius = myGoogleMap.calcScope();   // 座標範囲の算出
+
+                            // [mark]番目のポイントを中心とした矩形領域を作成
+                            // （緯度経度は北東にいくほど値が大きくなる）
+                            //{
+                                // 南西の隅
+                                var sw = new google.maps.LatLng(m.lat() - radius[0], m.lng() - radius[1]);
+                                // 北東の隅
+                                var ne = new google.maps.LatLng(m.lat() + radius[0], m.lng() + radius[1]);
+
+                                var llB = new google.maps.LatLngBounds(sw, ne);
+                            //}
+
+                            // 他のポイントが境界内に含まれるか
+                            //{
+                                for(ma in this.array) {
+
+                                    if(mark != ma) {
+
+                                        if(llB.contains(this.array[ma].position)) { // 境界内に含まれる
+
+                                            var n = this.array[ma].position;
+                                            var toLatLng = new google.maps.LatLng(m.lat() + (m.lat() - n.lat()), m.lng() + (m.lng() - n.lng()));
+
+                                            this.array[mark].setPosition(toLatLng);
+
+                                            f = true; // ループさせるため、フラグを立てる
+
+                                        }
+
+                                    }
+
+                                }
+                            //}
+                        }
+
+                        // フラグがtrueのとき、再起呼び出し
+                        //{
+                            if(f) {
+
+                                this.timerID = setTimeout("myGoogleMap.marker.adjustInterval()", 100);
+
+                            } else {
+
+                                clearTimeout(this.timerID); // 終了させる
+
+                                if(this.array.length > 1) {
+                                    //var coords = this.getAverage();
+                                    //myGoogleMap.map.setCenter(new google.maps.LatLng(coords.lat, coords.lng));
+                                    this.adjustBounds();
+                                }
+
+                            }
+                        //}
+                    },
+                //}
+
+
+                // マーカー達の平均緯度経度の算出
+                //{
+                    getAverage: function()
+                    {
+                        var lngLat = 0; // 緯度加算用
+                        var lngLng = 0; // 経度加算用
+
+                        // Markers: Array   マーカーポイントを格納した配列
+                        // mark:    integer マーカーポイントのインデックス
+
+                        for(mark in this.array) {
+                            var m = this.array[mark].position; // [mark]番目の座標を取得
+
+                            lngLat += m.lat();
+                            lngLng += m.lng();
+                        }
+
+                        lngLat /= this.array.length;
+                        lngLng /= this.array.length;
+
+                        var obj = new Object();
+                        obj.lat = lngLat;
+                        obj.lng = lngLng;
+
+                        return obj;
+                    },
+                //}
+
+
+                // 地図表示領域をマーカー位置に合わせて拡大
+                //{
+                    adjustBounds: function()
+                    {
+                        // マーカー1つ以下なら実行しない
+                        if(this.array.length <= 1) {
+                            return;
+                        }
+
+                        // 表示領域を生成します。
+                        var bounds = new google.maps.LatLngBounds();
+
+                        // Markers: Array   マーカーポイントを格納した配列
+                        // mark:    integer マーカーポイントのインデックス
+
+                        // 領域に全てのマーカー座標を追加
+                        for(mark in this.array) {
+                            bounds.extend (this.array[mark].position);
+                        }
+
+                        // 地図表示領域の変更を反映します。
+                        myGoogleMap.map.fitBounds (bounds);
+                    },
+                //}
+
+            },
+        //}
+
 
     }
 //}
