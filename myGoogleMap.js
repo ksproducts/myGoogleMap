@@ -497,6 +497,13 @@
                         }
 
                         targetPoint = new google.maps.LatLng(lat, lng);
+                        
+                        // ポイントが既にあれば追加しない
+                        for(mark in this.array) {
+                            if(this.array[mark].position.equals(targetPoint)) {
+                                return;
+                            }
+                        }
 
                         this.options.map      = myGoogleMap.map;
                         this.options.position = targetPoint;
@@ -515,13 +522,20 @@
                             {
                                 marker.setMap(null); //マーカーの削除
                                 this.array.splice(i, 1);
+                            });
 
+                        }
+
+                        if(this.options.enableInfoWindow) {
+
+                            google.maps.event.addListener(marker, "mouseup", function(e)
+                            {
                                 // 情報ウィンドウの表示
-                                //var iwOptions = {
-                                //    content: "test"
-                                //};
-                                //var infoWindow = new google.maps.InfoWindow(iwOptions);
-                                //infoWindow.open(myGoogleMap.map, marker);
+                                var iwOptions = {
+                                    content: "test"
+                                };
+                                var infoWindow = new google.maps.InfoWindow(iwOptions);
+                                infoWindow.open(myGoogleMap.map, marker);
                             });
 
                         }
@@ -683,6 +697,62 @@
                         myGoogleMap.map.fitBounds (bounds);
                     },
                 //}
+
+            },
+        //}
+
+
+        // ポリライン関連
+        //{
+            polyline: {
+
+                // ポリライン配列用
+                array: null,
+
+                // イベントリスナー
+                boundsChanged_listener: null, // 表示領域変更
+
+                // 各種プロパティ
+                options: {
+                    clickable: false,
+                    draggable: false,
+                    editable: false,
+                    map: null,              // GoogleMapのインスタンス
+                    path: new Array(),      // 座標の配列
+                    strokeColor: "#000000", // 線の色
+                    strokeOpacity: 0.8,     // 線の不透明度（0.0-1.0）
+                    strokeWeight: 3,        // 線の太さ（ピクセル）
+                },
+
+                add: function()
+                {
+                    this.obj = new google.maps.Polyline(this.options);
+
+                    this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
+                    {
+
+                        // 表示領域を生成します。
+                        var bounds = myGoogleMap.map.getBounds();
+        
+                        //ポリゴンが境界内に含まれるかどうかで表示・非表示を切り替え
+                        var pBounds = new google.maps.LatLngBounds();
+                        var myPoly = myPolygon.poly.getPaths();
+        
+                        myPoly.forEach( function( value, index, array) {
+                            value.forEach( function( val ) {
+                                pBounds.extend(val);
+                            });
+                        });
+        
+                        if(bounds.intersects(pBounds)) {
+                            myPolygon.poly.setMap(myPolygon.map);
+                        } else {
+                            myPolygon.poly.setMap(null);
+                        }
+        
+                    });
+
+                },
 
             },
         //}
