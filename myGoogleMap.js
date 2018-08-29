@@ -84,9 +84,6 @@
                 //GoogleMapインスタンスを生成(v3)
                 this.map = new google.maps.Map(document.getElementById(this.id), this.myOptions);
 
-                // マーカー配列の初期化
-                this.marker.array = new Array();
-
                 //this.marker.icon        = this.marker.makeIcon();
                 //this.marker.icon_shadow = this.marker.makeIconShadow();
 
@@ -165,23 +162,7 @@
                 google.maps.event.removeListener(this.idle_listener);
                 this.idle_listener = google.maps.event.addListener(this.map, "idle", function()
                 {
-
-                    // 表示領域を生成します。
-                    var bounds = myGoogleMap.map.getBounds();
-
-                    //マーカーが境界内に含まれるかどうかで表示・非表示を切り替え
-                    for(mark in myGoogleMap.marker.array) {
-
-                        if(bounds.contains(myGoogleMap.marker.array[mark].position)) {
-                            if(myGoogleMap.marker.array[mark].getMap() == null) {
-                                myGoogleMap.marker.array[mark].setMap(myGoogleMap.map);
-                            }
-                        } else {
-                            myGoogleMap.marker.array[mark].setMap(null);
-                        }
-
-                    }
-
+                    // code
                 });
 
                 google.maps.event.removeListener(this.zoomChanged_listener);
@@ -414,7 +395,10 @@
                 icon_shadow: null,
 
                 // マーカー配列用
-                array: null,
+                array: new Array(),
+
+                // イベントリスナー
+                idle_listener: null, // アイドル状態
 
                 // タイマーID
                 timerID: null,
@@ -526,6 +510,27 @@
                             });
 
                         }
+
+                        this.idle_listener = google.maps.event.addListener(this.options.map, "idle", function()
+                        {
+
+                            // 表示領域を生成します。
+                            var bounds = myGoogleMap.marker.options.map.getBounds();
+
+                            //マーカーが境界内に含まれるかどうかで表示・非表示を切り替え
+                            for(mark in myGoogleMap.marker.array) {
+
+                                if(bounds.contains(myGoogleMap.marker.array[mark].position)) {
+                                    if(myGoogleMap.marker.array[mark].getMap() == null) {
+                                        myGoogleMap.marker.array[mark].setMap(myGoogleMap.marker.options.map);
+                                    }
+                                } else {
+                                    myGoogleMap.marker.array[mark].setMap(null);
+                                }
+
+                            }
+
+                        });
 
                         if(toCenter) this.options.map.setCenter(targetPoint);
                     },
@@ -712,10 +717,10 @@
 
                         // 表示領域を生成します。
                         var bounds = myGoogleMap.polyline.options.map.getBounds();
-        
+
                         //ポリラインの表示領域が境界内に含まれるかどうかで表示・非表示を切り替え
                         var pBounds = new google.maps.LatLngBounds();
-        
+
                         myGoogleMap.polyline.array.forEach( function( value ) {
 
                             value.getPath().forEach( function( val ) {
@@ -727,9 +732,9 @@
                             } else {
                                 value.setMap(null);
                             }
-        
+
                         });
-        
+
                     });
 
                 },
@@ -779,8 +784,8 @@
 
                             var pBounds = new google.maps.LatLngBounds();
 
-                            value.forEach( function( val ) {
-                                val.getPaths().forEach( function( v ) {
+                            value.getPaths().forEach( function( val ) {
+                                val.forEach( function( v ) {
                                     pBounds.extend(v);
                                 });
                             });

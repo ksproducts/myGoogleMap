@@ -41,6 +41,22 @@
             myGoogleMap.make('map');
 
             myGoogleMap.marker.add(35.658582050535614, 139.74543124437332, true);
+
+            myGoogleMap.polyline.add(
+                new Array(
+                    new google.maps.LatLng(35.658582050535614, 139.74543124437332),
+                    new google.maps.LatLng(35.668582050535614, 139.73543124437332)
+                )
+            );
+
+            myGoogleMap.polygon.add(
+                new Array(
+                    new google.maps.LatLng(35.658582050535614, 139.74543124437332),
+                    new google.maps.LatLng(35.648582050535614, 139.74543124437332),
+                    new google.maps.LatLng(35.648582050535614, 139.73543124437332),
+                    new google.maps.LatLng(35.658582050535614, 139.73543124437332)
+                )
+            );
         }
     //}
 
