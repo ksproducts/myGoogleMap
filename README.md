@@ -55,6 +55,7 @@ myGoogleMap.polygon.add(
     )
 );
 ```
+
 レクタングル（矩形）を追加する
 ```javasript
 myGoogleMap.rectangle.add(
@@ -73,6 +74,7 @@ myGoogleMap.circle.add(35.658582050535614, 139.74543124437332, 5000);
 ```javascript
 myPolygon.make(myGoogleMap.map);
 ```
+
 ### myStreetView
 ストリートビューを表示するクラス
 ```javascript
