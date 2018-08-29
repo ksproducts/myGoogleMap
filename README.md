@@ -38,8 +38,8 @@ myGoogleMap.marker.add(35.658582050535614, 139.74543124437332, true);
 ```javascript
 myGoogleMap.polyline.add(
     new Array(
-        new google.maps.LatLng(35.658582050535614, 139.74543124437332),
-        new google.maps.LatLng(35.648582050535614, 139.73543124437332)
+        new Array(35.658582050535614, 139.74543124437332),
+        new Array(35.668582050535614, 139.73543124437332)
     )
 );
 ```
@@ -48,10 +48,10 @@ myGoogleMap.polyline.add(
 ```javascript
 myGoogleMap.polygon.add(
     new Array(
-        new google.maps.LatLng(35.658582050535614, 139.74543124437332),
-        new google.maps.LatLng(35.648582050535614, 139.74543124437332),
-        new google.maps.LatLng(35.648582050535614, 139.73543124437332),
-        new google.maps.LatLng(35.658582050535614, 139.73543124437332)
+        new Array(35.658582050535614, 139.74543124437332),
+        new Array(35.648582050535614, 139.74543124437332),
+        new Array(35.648582050535614, 139.73543124437332),
+        new Array(35.658582050535614, 139.73543124437332)
     )
 );
 ```

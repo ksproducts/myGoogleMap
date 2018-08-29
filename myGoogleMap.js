@@ -707,8 +707,12 @@
 
                 add: function(latLngArray)
                 {
+                    var latLng = new Array();
+                    latLngArray.forEach( function( value ) {
+                        latLng.push( new google.maps.LatLng(value[0], value[1]) );
+                    });
                     this.options.map  = myGoogleMap.map;
-                    this.options.path = latLngArray;
+                    this.options.path = latLng;
 
                     this.array.push(new google.maps.Polyline(this.options));
 
@@ -768,8 +772,12 @@
 
                 add: function(latLngArray)
                 {
+                    var latLng = new Array();
+                    latLngArray.forEach( function( value ) {
+                        latLng.push( new google.maps.LatLng(value[0], value[1]) );
+                    });
                     this.options.map   = myGoogleMap.map;
-                    this.options.paths = latLngArray;
+                    this.options.paths = latLng;
 
                     this.array.push(new google.maps.Polygon(this.options));
 
