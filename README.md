@@ -37,22 +37,22 @@ myGoogleMap.marker.add(35.658582050535614, 139.74543124437332, true);
 ポリラインを追加する
 ```javascript
 myGoogleMap.polyline.add(
-	new Array(
-		new google.maps.LatLng(35.658582050535614, 139.74543124437332),
-		new google.maps.LatLng(35.648582050535614, 139.73543124437332),
-	)
+    new Array(
+        new google.maps.LatLng(35.658582050535614, 139.74543124437332),
+        new google.maps.LatLng(35.648582050535614, 139.73543124437332)
+    )
 );
 ```
 
 ポリゴンを追加する
 ```javascript
 myGoogleMap.polygon.add(
-	new Array(
-		new google.maps.LatLng(35.658582050535614, 139.74543124437332),
-		new google.maps.LatLng(35.648582050535614, 139.74543124437332),
-		new google.maps.LatLng(35.648582050535614, 139.73543124437332),
-		new google.maps.LatLng(35.658582050535614, 139.73543124437332),
-	)
+    new Array(
+        new google.maps.LatLng(35.658582050535614, 139.74543124437332),
+        new google.maps.LatLng(35.648582050535614, 139.74543124437332),
+        new google.maps.LatLng(35.648582050535614, 139.73543124437332),
+        new google.maps.LatLng(35.658582050535614, 139.73543124437332)
+    )
 );
 ```
 

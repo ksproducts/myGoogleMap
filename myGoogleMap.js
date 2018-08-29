@@ -683,7 +683,7 @@
             polyline: {
 
                 // ポリライン配列用
-                array: null,
+                array: new Array(),
 
                 // イベントリスナー
                 boundsChanged_listener: null, // 表示領域変更
@@ -742,7 +742,7 @@
             polygon: {
 
                 // ポリゴン配列用
-                array: null,
+                array: new Array(),
 
                 // イベントリスナー
                 boundsChanged_listener: null, // 表示領域変更
@@ -782,7 +782,7 @@
                             value.forEach( function( val ) {
                                 val.getPaths().forEach( function( v ) {
                                     pBounds.extend(v);
-                                }
+                                });
                             });
 
                             if(bounds.intersects(pBounds)) {
