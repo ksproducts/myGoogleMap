@@ -517,7 +517,7 @@
                             // 表示領域を生成します。
                             var bounds = myGoogleMap.marker.options.map.getBounds();
 
-                            //マーカーが境界内に含まれるかどうかで表示・非表示を切り替え
+                            // マーカーが境界内に含まれるかどうかで表示・非表示を切り替え
                             for(mark in myGoogleMap.marker.array) {
 
                                 if(bounds.contains(myGoogleMap.marker.array[mark].position)) {
@@ -705,6 +705,7 @@
                     strokeWeight: 3,        // 線の太さ（ピクセル）
                 },
 
+                // ポリラインの追加
                 add: function(latLngArray)
                 {
                     var latLng = new Array();
@@ -714,7 +715,8 @@
                     this.options.map  = myGoogleMap.map;
                     this.options.path = latLng;
 
-                    this.array.push(new google.maps.Polyline(this.options));
+                    var myPoly = new google.maps.Polyline(this.options);
+                    this.array.push(myPoly);
 
                     this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
                     {
@@ -722,7 +724,7 @@
                         // 表示領域を生成します。
                         var bounds = myGoogleMap.polyline.options.map.getBounds();
 
-                        //ポリラインの表示領域が境界内に含まれるかどうかで表示・非表示を切り替え
+                        // ポリラインの表示領域が境界内に含まれるかどうかで表示・非表示を切り替え
                         var pBounds = new google.maps.LatLngBounds();
 
                         myGoogleMap.polyline.array.forEach( function( value ) {
@@ -770,6 +772,7 @@
                     strokeWeight: 3,        // 線の太さ（ピクセル）
                 },
 
+                // ポリゴンの追加
                 add: function(latLngArray)
                 {
                     var latLng = new Array();
@@ -779,7 +782,8 @@
                     this.options.map   = myGoogleMap.map;
                     this.options.paths = latLng;
 
-                    this.array.push(new google.maps.Polygon(this.options));
+                    var myPoly = new google.maps.Polygon(this.options);
+                    this.array.push(myPoly);
 
                     this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
                     {
@@ -787,7 +791,7 @@
                         // 表示領域を生成します。
                         var bounds = myGoogleMap.polygon.options.map.getBounds();
 
-                        //ポリゴンが境界内に含まれるかどうかで表示・非表示を切り替え
+                        // ポリゴンが境界内に含まれるかどうかで表示・非表示を切り替え
                         myGoogleMap.polygon.array.forEach( function( value ) {
 
                             var pBounds = new google.maps.LatLngBounds();
@@ -800,6 +804,126 @@
 
                             if(bounds.intersects(pBounds)) {
                                 value.setMap(myGoogleMap.polygon.options.map);
+                            } else {
+                                value.setMap(null);
+                            }
+
+                        });
+
+                    });
+
+                },
+
+            },
+        //}
+
+        // レクタングル（矩形）関連
+        //{
+            rectangle: {
+
+                // サークル配列用
+                array: new Array(),
+
+                // イベントリスナー
+                boundsChanged_listener: null, // 表示領域変更
+
+                // 各種プロパティ
+                options: {
+                    bounds: null,           // 表示領域
+                    clickable: false,       // クリックの可否
+                    draggable: false,       // ドラッグの可否
+                    editable: false,        // 編集の可否
+                    fillColor: "#ccff99",   // 塗り潰しの色
+                    fillOpacity: 0.2,       // 塗り潰しの不透明度 0.0～1.0
+                    map: null,              // GoogleMapのインスタンス
+                    strokeColor: "#009900", // 線の色
+                    strokeOpacity: 0.5,     // 線の不透明度 0.0～1.0
+                    strokeWeight: 3,        // 線の太さ（単位：ピクセル）
+                },
+
+                // レクタングル（矩形）の追加
+                add: function(swLatLng, neLatLng)
+                {
+                    var swPoint   = new google.maps.LatLng(swLatLng[0], swLatLng[1]);
+                    var nePoint   = new google.maps.LatLng(neLatLng[0], neLatLng[1]);
+                    var recBounds = new google.maps.LatLngBounds(swPoint, nePoint);
+
+                    this.options.bounds = recBounds;
+                    this.options.map    = myGoogleMap.map;
+
+                    var myRect = new google.maps.Rectangle(this.options);
+                    this.array.push(myRect);
+
+                    this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
+                    {
+
+                        // 表示領域を生成します。
+                        var bounds = myGoogleMap.rectangle.options.map.getBounds();
+
+                        // レクタングル（矩形）が境界内に含まれるかどうかで表示・非表示を切り替え
+                        myGoogleMap.rectangle.array.forEach( function( value ) {
+
+                            if(bounds.intersects(value.getBounds())) {
+                                value.setMap(myGoogleMap.rectangle.options.map);
+                            } else {
+                                value.setMap(null);
+                            }
+
+                        });
+
+                    });
+
+                },
+
+            },
+        //}
+
+        // サークル（円）関連
+        //{
+            circle: {
+
+                // サークル配列用
+                array: new Array(),
+
+                // イベントリスナー
+                boundsChanged_listener: null, // 表示領域変更
+
+                // 各種プロパティ
+                options: {
+                    center: null,           // 中心の座標
+                    clickable: false,       // クリックの可否
+                    draggable: false,       // ドラッグの可否
+                    editable: false,        // 編集の可否
+                    fillColor: "#0099ff",   // 塗り潰しの色
+                    fillOpacity: 0.2,       // 塗り潰しの不透明度 0.0～1.0
+                    map: null,              // GoogleMapのインスタンス
+                    radius: 0,              // 半径（単位：m）
+                    strokeColor: "#3333ff", // 線の色
+                    strokeOpacity: 0.5,     // 線の不透明度 0.0～1.0
+                    strokeWeight: 3,        // 線の太さ（単位：ピクセル）
+                },
+
+                // サークル（円）の追加
+                add: function(lat, lng, radius)
+                {
+                    this.options.center = new google.maps.LatLng(lat, lng);
+                    this.options.map    = myGoogleMap.map;
+                    this.options.radius = radius;
+
+                    var myCircle = new google.maps.Circle(this.options);
+                    this.array.push(myCircle);
+
+                    this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
+                    {
+
+                        // 表示領域を生成します。
+                        var bounds = myGoogleMap.circle.options.map.getBounds();
+
+                        // サークル（円）が境界内に含まれるかどうかで表示・非表示を切り替え
+                        myGoogleMap.circle.array.forEach( function( value ) {
+
+                            if(bounds.intersects(value.getBounds())) {
+                                value.setMap(myGoogleMap.circle.options.map);
                             } else {
                                 value.setMap(null);
                             }

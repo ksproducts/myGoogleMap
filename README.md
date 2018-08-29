@@ -55,6 +55,18 @@ myGoogleMap.polygon.add(
     )
 );
 ```
+レクタングル（矩形）を追加する
+```javasript
+myGoogleMap.rectangle.add(
+    new Array(35.708582050535614, 139.80543124437332),
+    new Array(35.758582050535614, 139.84543124437332)
+);
+```
+
+サークル（円）を追加する
+```javascript
+myGoogleMap.circle.add(35.658582050535614, 139.74543124437332, 5000);
+```
 
 ### myPolygon
 図形を描画して距離や面積を計測するクラス
