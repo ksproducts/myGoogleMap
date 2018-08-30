@@ -19,7 +19,7 @@ Google Maps JavaScript APIを利用しやすいようにメソッドやプロパ
 myGoogleMap.default_location.lat = 35.658582050535614;
 myGoogleMap.default_location.lng = 139.74543124437332;
 
-myGoogleMap.make('map'); 引数：マップを表示するHTMLタグID
+myGoogleMap.make('map'); // 引数：マップを表示するHTMLタグID
 ```
 読み込みが完了している状態で地図を移動させる
 引数：緯度, 経度
