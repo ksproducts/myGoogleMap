@@ -90,6 +90,14 @@ myGooleMap.myOptions.metric = true;
 ```javascript
 myPolygon.make(myGoogleMap.map);
 ```
+描画した図形をクリアするとき
+```javascript
+myPolygon.clear();
+```
+描画モードを終了するとき
+```javascript
+myPolygon.destroy();
+```
 
 ### myStreetView
 ストリートビューを表示するクラス  
