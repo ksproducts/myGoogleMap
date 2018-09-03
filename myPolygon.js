@@ -58,6 +58,7 @@
             this.map.setOptions( { draggableCursor: "default", draggingCursor: "default" } );
 
             // マップのクリックイベントに図形描画
+            google.maps.event.removeListener(this.click_listener);
             this.click_listener = google.maps.event.addListener(this.map, "click", function(e)
             {
                 if(e) {
@@ -113,6 +114,7 @@
                 }
             });
 
+            google.maps.event.removeListener(this.boundsChanged_listener);
             this.boundsChanged_listener = google.maps.event.addListener(this.map, "bounds_changed", function()
             {
 

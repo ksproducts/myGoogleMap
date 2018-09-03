@@ -511,6 +511,7 @@
 
                         }
 
+                        google.maps.event.removeListener(this.idle_listener);
                         this.idle_listener = google.maps.event.addListener(this.options.map, "idle", function()
                         {
 
@@ -718,6 +719,7 @@
                     var myPoly = new google.maps.Polyline(this.options);
                     this.array.push(myPoly);
 
+                    google.maps.event.removeListener(this.boundsChanged_listener);
                     this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
                     {
 
@@ -785,6 +787,7 @@
                     var myPoly = new google.maps.Polygon(this.options);
                     this.array.push(myPoly);
 
+                    google.maps.event.removeListener(this.boundsChanged_listener);
                     this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
                     {
 
@@ -854,6 +857,7 @@
                     var myRect = new google.maps.Rectangle(this.options);
                     this.array.push(myRect);
 
+                    google.maps.event.removeListener(this.boundsChanged_listener);
                     this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
                     {
 
@@ -913,6 +917,7 @@
                     var myCircle = new google.maps.Circle(this.options);
                     this.array.push(myCircle);
 
+                    google.maps.event.removeListener(this.boundsChanged_listener);
                     this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
                     {
 
