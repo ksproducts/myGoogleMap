@@ -398,7 +398,7 @@
                 array: new Array(),
 
                 // イベントリスナー
-                idle_listener: null, // アイドル状態
+                boundsChanged_listener: null, // 表示領域変更
 
                 // タイマーID
                 timerID: null,
@@ -511,8 +511,8 @@
 
                         }
 
-                        google.maps.event.removeListener(this.idle_listener);
-                        this.idle_listener = google.maps.event.addListener(this.options.map, "idle", function()
+                        google.maps.event.removeListener(this.boundsChanged_listener);
+                        this.boundsChanged_listener = google.maps.event.addListener(this.options.map, "bounds_changed", function()
                         {
 
                             // 表示領域を生成します。
