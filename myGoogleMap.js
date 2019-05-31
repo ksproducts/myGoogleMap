@@ -663,8 +663,14 @@
                 //{
                     adjustBounds: function()
                     {
-                        // マーカー1つ以下なら実行しない
-                        if(this.array.length <= 1) {
+                        // マーカーがなければ実行しない
+                        if(this.array.length == 0) {
+                            return;
+                        }
+
+                        // マーカー1つなら中心表示のみ
+                        if(this.array.length == 1) {
+                            myGoogleMap.map.setCenter(this.array[0].position);
                             return;
                         }
 
