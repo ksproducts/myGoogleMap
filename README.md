@@ -2,7 +2,7 @@ myGoogleMap
 ====
 
 # Overview
-Google Maps JavaScript APIを利用しやすいようにメソッドやプロパティを定義したクラスライブラリ
+Google Maps JavaScript APIを利用しやすいようにメソッドやプロパティを定義したクラスライブラリ00
 
 ## Install
 ダウンロードしてHTMLに読み込んでください。
